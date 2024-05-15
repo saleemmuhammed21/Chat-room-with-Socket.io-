@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Chat with socket.io</title>
+    <link rel="stylesheet" href="styles/style.css" />
+    <script src="node_modules/socket.io/client-dist/socket.io.js"></script>
+    <script src="node_modules/socketio-file-upload/client.js"></script>
+    <script src="node_modules/jquery/dist/jquery.js"></script>
+    <script src="https://cdn.socket.io/4.0.0/socket.io.min.js"></script>
+    <script>
+      $(() => {
+        var socket = io("http://localhost:8012");
+        //socket events
+        socket.on("connect", () => {
+          var uploader = new SocketIOFileUpload(socket);
+          uploader.listenOnInput(document.getElementById("fu"));
+          socket.on("connectionsuccess", (msg) => {
+            console.log(msg);
+            $("#join-div").show();
+          });
+          socket.on("userlist", (users) => {
+            $("#join-div").hide();
+            $("#chat-div").show();
+            $("#users").empty();
+            $("#to").empty();
+            users.forEach((u) => {
+              $("#users").append(`<li>${u.username}</li>`);
+              $("#to").append(`<option value='${u.id}'>${u.username}</option>`);
+            });
+            $("#to").append(`<option value='' selected>Select one</option>`);
+          });
+          socket.on("message", (o) => {
+            $("#messages").append(`<li>From ${o.from}: ${o.msg}</li>`);
+          });
+          socket.on("privateshare", (data, u) => {
+            console.log(data);
+            console.log(u);
+            $("#private").append(`<div class='share'>
+                                    <div>From ${u}</div>
+                                <div>Title ${title}</div>
+                                <div>urls ${urls}</div>
+                                `);
+          });
+          socket.on("uploaded", (m) => {
+            console.log(m);
+            $("#file-box").append(`<div class='box'>
+                <img src="uploads/${m.type == "image" ? m.file : "file.png"}" />
+                <div>Uploaded by ${m.from}</div>
+                <div><a target='_blank' href="uploads/${m.file}">Download</a></div>
+            </div>`);
+          });
+          //buttons
+          $("#join").click(() => {
+            console.log("join");
+            socket.emit("addme", $("#username").val());
+            $("#display-name").html("Connected as " + $("#username").val());
+          });
+          $("#send").click(() => {
+            console.log("send");
+            socket.emit("send", $("#msg").val());
+            $("#msg").val("");
+          });
+          $("#share").click(() => {
+            if (document.getElementById("form").checkValidity()) {
+              socket.emit("share", {
+                to: $("#to").val(),
+                title: $("#title").val(),
+                urls: $("#urls").val(),
+              });
+            }
+          });
+          $("#browse").click(() => {
+            $("#fu").trigger("click");
+          });
+        });
+      });
+    </script>
+  </head>
+  <body>
+    <nav class="menu">
+      <span class="brand">Private Share & chat</span>
+      <ul class="link">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="chat.html">Chat & Share</a></li>
+      </ul>
+    </nav>
+    <main class="container">
+      <div class="mid" id="join-div" >
+        <div class="flexrow">
+          <input id="username" placeholder="username..." class="text" /><button
+            type="button"
+            id="join"
+            class="gbutton"
+          >
+            Join
+          </button>
+        </div>
+      </div>
+      <div class="panel" id="chat-div" >
+        <div>
+          <div class="list-head">Users</div>
+          <ul id="users" class="list"></ul>
+        </div>
+        <div>
+          <div
+            class="column"
+            id="display-name"
+            
+          ></div>
+          <div class="column">
+            <div class="flexrow">
+              <input id="msg" placeholder="message..." class="text" /><button
+                type="button"
+                id="send"
+                class="gbutton"
+              >
+                Send</button
+              ><button type="button" id="browse" class="gbutton">Browse</button>
+            </div>
+          </div>
+          <div
+            class="column"
+            style="
+              padding: 15px;
+              height: 250px;
+              min-height: 250px;
+              overflow: auto;
+            "
+          >
+            <div class="list-head">Messages</div>
+            <ul id="messages" class="list"></ul>
+          </div>
+          <div
+            class="column"
+            style="
+              padding: 15px;
+              height: 300px;
+              min-height: 300px;
+              overflow: auto;
+            "
+          >
+            <div class="list-head">File Shares</div>
+            <div class="file-box" id="file-box"></div>
+          </div>
+          <div class="column">
+            <div class="list-head">Share private</div>
+            <form id="form">
+              <div class="flexrow" >
+                <select id="to" class="text" required></select>
+              </div>
+              <div class="flexrow" style="padding: 5px 15px">
+                <input
+                  placeholder="title..."
+                  id="title"
+                  class="text"
+                  required
+                />
+              </div>
+              <div class="flexrow" >
+                <textarea
+                  placeholder="urls..."
+                  id="urls"
+                  class="text"
+                  rows="3"
+                  required
+                ></textarea>
+              </div>
+              <div
+                class="flexrow"
+                style="padding: 5px 15px; justify-content: flex-end"
+              >
+                <button id="share" type="button" class="btn">Share</button>
+              </div>
+            </form>
+          </div>
+          <div
+            class="column"
+            style="
+              padding: 15px;
+              height: 300px;
+              min-height: 300px;
+              overflow: auto;
+            "
+          >
+            <div class="list-head">Private Shares</div>
+            <div id="private"></div>
+          </div>
+        </div>
+      </div>
+    </main>
+    <footer></footer>
+    <input type="file" id="fu" style="display: none" />
+  </body>
+</html>

@@ -1,0 +1,147 @@
+*{
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+}
+body{
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+.brand
+{
+    color: #000000;
+    font-weight: 1200;
+    font-style: italic;
+     padding-left: 1.2rem;
+}
+.menu
+{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1px;
+    background-color: #beca1b;
+    
+}
+.link
+{
+    list-style: none;
+    display: flex;
+    justify-content: flex-start;
+
+}
+.link li{
+    margin-right: 1px;
+}
+.link a{
+    display: grid;
+    width: 110px;
+    text-decoration: none;
+    padding: 1.25rem .5rem;
+    text-align: center;
+    background-color: #7e710e;
+    color: #fefefb;
+    
+}
+.link a:hover
+{
+    background-color: #101010;
+    display: inline-block;
+}
+/* panels */
+.container
+{
+    width: 97.5%;
+    margin: 16px auto;
+}
+.mid
+{
+    display: grid;
+    grid-template-columns: 1fr;
+    width: 50%;
+    margin: 8px auto;
+}
+.flexrow
+{
+    display: flex;
+}
+.panel
+{
+    display: grid;
+    grid-template-columns: 1fr 4fr;
+    width: 100%;
+
+}
+.column
+{
+    width: 100%;
+   margin: 15px 0;
+}
+.share
+{
+    padding: 10px;
+    border: solid 1px #ccc;
+    border-radius: .5rem;
+    margin-bottom: 8px;
+}
+.share div
+{
+    margin-bottom: 8px;
+}
+.file-box
+{
+    padding: 15px;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    width: 100%;
+    
+}
+.box {
+    width: 170px;
+    margin: 5px;
+}
+.box img{
+    width: 170px;
+}
+.box div
+{
+    text-align: center;
+    margin: 5px;
+}
+/* list */
+.list-head
+{
+    width: 100%;
+    text-align: center;
+    font-weight: 500;
+    background-color:  #7e710e;
+    color: #FFFFFF;
+}
+.list{
+    list-style: none;
+    padding: 0;
+    color:  #7e710e;
+    
+}
+.list li{
+    background-color:  #7e710e;
+    color: #FFFFFF;
+    margin-bottom: 1px;
+    padding: .5rem .25rem;
+}
+/* from */
+.text 
+{
+    flex: 1 1 auto;
+    padding: .5rem;
+}
+.gbutton
+{ background-color: #7e710e;
+  padding: .5rem 1rem;
+  color: #FFFFFF;
+}
+.btn 
+{
+    padding: .75rem 1.5rem;
+    
+}
